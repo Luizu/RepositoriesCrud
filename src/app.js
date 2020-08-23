@@ -14,9 +14,9 @@ app.get("/repositories", (request, response) => {
 });
 
 app.post("/repositories", (request, response) => {
-  let {title, url,techs} = request.body
+  let { title, url, techs } = request.body
 
-  const repository = {id: uuid(),title, url, techs, likes: 0}
+  const repository = { id: uuid(), title, url, techs, likes: 0 }
 
   repositories.push(repository)
 
@@ -26,20 +26,22 @@ app.post("/repositories", (request, response) => {
 
 app.put("/repositories/:id", (request, response) => {
   const { id } = request.params
-  const {title, url, techs} = request.body
+  const { title, url, techs } = request.body
 
-  let repository = repositories.find(repository => repository.id === id)
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id)
 
-  if (!repository) {
-    return response.status(400).json({ error: 'repository not found'})
+  if (repositoryIndex < 0) {
+    return response.status(400).json({ error: 'repository not found' })
   }
 
-  repository = {
-    ...repository,
+  const repository = {
+    id,
     title,
     url,
-    techs,
+    techs
   }
+
+  repositories[repositoryIndex] = repository
 
   return response.json(repository)
 
@@ -47,12 +49,12 @@ app.put("/repositories/:id", (request, response) => {
 
 app.delete("/repositories/:id", (request, response) => {
   const { id } = request.params
-  const {title, url, techs} = request.body
+  const { title, url, techs } = request.body
 
   const repositoryIndex = repositories.findIndex(repository => repository.id === id)
 
   if (repositoryIndex < 0) {
-    return response.status(400).json({ error: 'repository not found'})
+    return response.status(400).json({ error: 'repository not found' })
   }
 
   repositories.splice(repositoryIndex, 1)
@@ -66,7 +68,7 @@ app.post("/repositories/:id/like", (request, response) => {
   const repository = repositories.find(repository => repository.id === id)
 
   if (!repository) {
-    return response.status(400).json({ error: 'repository not found'})
+    return response.status(400).json({ error: 'repository not found' })
   }
 
   repository.likes += 1
